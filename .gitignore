@@ -7,7 +7,7 @@
 
 # machine dependencies
 package-lock.json
-
+.vscode
 
 # testing
 /coverage
