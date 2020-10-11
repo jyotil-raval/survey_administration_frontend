@@ -36,8 +36,20 @@ const AddSurvey = (props: any) => {
   const [expireDate, setExpireDate] = useInput('');
   const [url, setURL] = useInput('');
   const [fromEmail, setFromEmail] = useInput('');
+  const [accessibilityEmail, setAccessibilityEmail] = useInput('');
+
   const [triggerCaseCloser, setTriggerCaseCloser] = useState(false);
   const [triggerActivityCloser, setTriggerActivityCloser] = useState(false);
+
+  const [accessibility, setAccessibility] = useState([]);
+
+  const addAccessibility = () => {
+    let temp: any = [];
+    temp = accessibility;
+    temp.push(accessibilityEmail);
+    setAccessibility(temp);
+    console.log('addAccessibility -> accessibility', accessibility);
+  };
 
   const validateForm: (surveyDetail: object) => boolean = surveyDetail => {
     return true;
@@ -88,7 +100,6 @@ const AddSurvey = (props: any) => {
                   setNameFieldDirty(true);
                 }}>
                 <TextField
-                  fullWidth
                   required
                   id='survey-name'
                   error={name === '' && nameFieldDirty}
@@ -105,7 +116,6 @@ const AddSurvey = (props: any) => {
               <FormControl>
                 <TextField
                   id='survey-expire-date'
-                  fullWidth
                   required
                   label='Survey Expire Date'
                   variant='outlined'
@@ -126,7 +136,6 @@ const AddSurvey = (props: any) => {
             <Grid item>
               <FormControl>
                 <TextField
-                  fullWidth
                   required
                   error={url === '' && formDirty}
                   helperText={url === '' ? 'Please enter proper URL' : ' '}
@@ -142,7 +151,6 @@ const AddSurvey = (props: any) => {
             <Grid item>
               <FormControl>
                 <TextField
-                  fullWidth
                   required
                   error={fromEmail === '' && formDirty}
                   helperText={fromEmail === '' ? 'Please enter proper Email Address' : ' '}
@@ -173,6 +181,31 @@ const AddSurvey = (props: any) => {
                 />
               </Grid>
             </div>
+          </Grid>
+          <Grid container>
+            <Grid item>
+              <FormControl>
+                <TextField
+                  required
+                  id='survey-accessibility-email'
+                  label='Survey accessibility Email Address'
+                  type='search'
+                  variant='outlined'
+                  value={accessibilityEmail}
+                  onChange={setAccessibilityEmail}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <div className='margin-top-8p'>
+                <Button type='button' variant='outlined' color='primary' onClick={addAccessibility}>
+                  Add to Accessibility
+                </Button>
+              </div>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item></Grid>
           </Grid>
           <div>
             <Button type='button' variant='contained' color='primary'>
