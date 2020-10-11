@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SurveyDetail {
-  id: number;
+  id: string;
   survey_name: string;
   survey_expire_date: Date;
   survey_url: string;
@@ -69,7 +69,7 @@ const AddSurvey = (props: any) => {
     const form_id = parseInt(`${Math.random()}`.split('.')[1]);
 
     let surveyDetail: SurveyDetail = {
-      id: form_id,
+      id: `${form_id}`,
       survey_name: name,
       survey_expire_date: expireDate,
       survey_url: url,
@@ -79,14 +79,7 @@ const AddSurvey = (props: any) => {
 
     const isFormValid: boolean = validateForm(surveyDetail);
     if (isFormValid) {
-      let surveys = [];
-      if (localStorage.getItem('surveys')) {
-        surveys = JSON.parse(localStorage.getItem('surveys') || '');
-      }
-      surveys.push(surveyDetail);
-      localStorage.setItem('surveys', JSON.stringify(surveys));
-      const result = await add_survey(surveyDetail);
-      console.log('const handleSubmit: -> result', result);
+      await add_survey(surveyDetail);
     }
   };
 

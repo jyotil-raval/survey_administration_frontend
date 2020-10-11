@@ -11,6 +11,10 @@
   color: white;
 }
 
+.align-left-content {
+  text-align: left;
+}
+
 .align-item-right {
   align-items: flex-end;
 }

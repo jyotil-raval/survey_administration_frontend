@@ -1,7 +1,7 @@
 import { api, setHeadersWithUserToken } from './axios';
 
 interface SurveyDetail {
-  id: number;
+  id: string;
   survey_name: string;
   survey_expire_date: Date;
   survey_url: string;
