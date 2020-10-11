@@ -99,8 +99,7 @@ const AddSurvey = (props: any) => {
   };
 
   const isUrlInvalid: (userInput: string) => boolean = userInput => {
-    const regexQuery = '/(http(s)?://.)?(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/';
-    let url = new RegExp(regexQuery, 'g');
+    let url = new RegExp(/^(ftp|http|https):\/\/[^ "]+$/);
     if (url.test(userInput)) {
       return false;
     }
@@ -108,9 +107,8 @@ const AddSurvey = (props: any) => {
   };
 
   const isEmailInvalid: (userInput: string) => boolean = userInput => {
-    const regexQuery = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/";
-    let url = new RegExp(regexQuery, 'g');
-    if (url.test(userInput)) {
+    let email = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+    if (email.test(userInput)) {
       return false;
     }
     return true;

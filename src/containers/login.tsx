@@ -39,6 +39,7 @@ const Login: FC = (props: any) => {
     localStorage.setItem('idToken', result.idToken);
     localStorage.setItem('refreshToken', result.refreshToken);
     localStorage.setItem('isLogin', 'true');
+    window.location.reload();
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {

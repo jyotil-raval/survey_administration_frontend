@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const environment = {
-  baseURL: 'https://tedc58dlsa.execute-api.us-east-1.amazonaws.com/dev/'
+  baseURL: 'https://rzojxlyloc.execute-api.us-east-1.amazonaws.com/Development/'
 };
 
 let api: any;
