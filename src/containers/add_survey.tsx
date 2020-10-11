@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import useInput from '../components/useTextField';
 import { Button, Checkbox, FormControl, FormControlLabel, Grid, Typography } from '@material-ui/core';
+import { add_survey } from '../server/add_survey';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +28,7 @@ interface SurveyDetail {
   survey_expire_date: Date;
   survey_url: string;
   survey_from_email: string;
+  accessibility: string[] | undefined;
 }
 
 const AddSurvey = (props: any) => {
@@ -43,19 +45,27 @@ const AddSurvey = (props: any) => {
 
   const [accessibility, setAccessibility] = useState([]);
 
+  const emptyUseInput = (dispatch: any): any => {
+    let event = {
+      preventDefault: () => {},
+      target: { value: '' }
+    };
+    dispatch(event);
+  };
+
   const addAccessibility = () => {
     let temp: any = [];
     temp = accessibility;
     temp.push(accessibilityEmail);
     setAccessibility(temp);
-    console.log('addAccessibility -> accessibility', accessibility);
+    emptyUseInput(setAccessibilityEmail);
   };
 
   const validateForm: (surveyDetail: object) => boolean = surveyDetail => {
     return true;
   };
 
-  const handleSubmit: () => void = () => {
+  const handleSubmit: () => void = async () => {
     const form_id = parseInt(`${Math.random()}`.split('.')[1]);
 
     let surveyDetail: SurveyDetail = {
@@ -63,7 +73,8 @@ const AddSurvey = (props: any) => {
       survey_name: name,
       survey_expire_date: expireDate,
       survey_url: url,
-      survey_from_email: fromEmail
+      survey_from_email: fromEmail,
+      accessibility: accessibility
     };
 
     const isFormValid: boolean = validateForm(surveyDetail);
@@ -74,6 +85,8 @@ const AddSurvey = (props: any) => {
       }
       surveys.push(surveyDetail);
       localStorage.setItem('surveys', JSON.stringify(surveys));
+      const result = await add_survey(surveyDetail);
+      console.log('const handleSubmit: -> result', result);
     }
   };
 
@@ -85,8 +98,28 @@ const AddSurvey = (props: any) => {
     setTriggerActivityCloser(event.target.checked);
   };
 
-  const [formDirty, setFromDirty] = useState<boolean>(false);
+  const isUrlInvalid: (userInput: string) => boolean = userInput => {
+    const regexQuery = '/(http(s)?://.)?(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/';
+    let url = new RegExp(regexQuery, 'g');
+    if (url.test(userInput)) {
+      return false;
+    }
+    return true;
+  };
+
+  const isEmailInvalid: (userInput: string) => boolean = userInput => {
+    const regexQuery = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/";
+    let url = new RegExp(regexQuery, 'g');
+    if (url.test(userInput)) {
+      return false;
+    }
+    return true;
+  };
+
   const [nameFieldDirty, setNameFieldDirty] = useState<boolean>(false);
+  const [expireDateDirty, setExpireDateDirty] = useState<boolean>(false);
+  const [urlDirty, setURLDirty] = useState<boolean>(false);
+  const [fromEmailDirty, setFromEmailDirty] = useState<boolean>(false);
 
   return (
     <Fragment>
@@ -103,7 +136,7 @@ const AddSurvey = (props: any) => {
                   required
                   id='survey-name'
                   error={name === '' && nameFieldDirty}
-                  helperText={name === '' ? 'Empty field!' : ' '}
+                  helperText={name === '' ? 'Enter Survey Name' : ' '}
                   label='Survey Name'
                   type='search'
                   variant='outlined'
@@ -113,14 +146,17 @@ const AddSurvey = (props: any) => {
               </FormControl>
             </Grid>
             <Grid item>
-              <FormControl>
+              <FormControl
+                onClick={() => {
+                  setExpireDateDirty(true);
+                }}>
                 <TextField
                   id='survey-expire-date'
                   required
                   label='Survey Expire Date'
                   variant='outlined'
                   type='date'
-                  error={expireDate === '' && formDirty}
+                  error={expireDate === '' && expireDateDirty}
                   helperText={expireDate === '' ? 'Please enter proper date' : ' '}
                   value={expireDate}
                   onChange={setExpireDate}
@@ -134,11 +170,14 @@ const AddSurvey = (props: any) => {
           </Grid>
           <Grid container>
             <Grid item>
-              <FormControl>
+              <FormControl
+                onClick={() => {
+                  setURLDirty(true);
+                }}>
                 <TextField
                   required
-                  error={url === '' && formDirty}
-                  helperText={url === '' ? 'Please enter proper URL' : ' '}
+                  error={urlDirty && (url === '' || isUrlInvalid(url))}
+                  helperText={urlDirty && (url === '' || isUrlInvalid(url)) ? 'Please enter proper URL' : ' '}
                   id='survey-url'
                   label='Survey URL'
                   type='search'
@@ -149,11 +188,14 @@ const AddSurvey = (props: any) => {
               </FormControl>
             </Grid>
             <Grid item>
-              <FormControl>
+              <FormControl
+                onClick={() => {
+                  setFromEmailDirty(true);
+                }}>
                 <TextField
                   required
-                  error={fromEmail === '' && formDirty}
-                  helperText={fromEmail === '' ? 'Please enter proper Email Address' : ' '}
+                  error={fromEmailDirty && (fromEmail === '' || isEmailInvalid(fromEmail))}
+                  helperText={fromEmailDirty && (fromEmail === '' || isEmailInvalid(fromEmail)) ? 'Please enter proper Email Address' : ' '}
                   id='survey-email'
                   label='Survey From Email Address'
                   type='search'
@@ -185,15 +227,7 @@ const AddSurvey = (props: any) => {
           <Grid container>
             <Grid item>
               <FormControl>
-                <TextField
-                  required
-                  id='survey-accessibility-email'
-                  label='Survey accessibility Email Address'
-                  type='search'
-                  variant='outlined'
-                  value={accessibilityEmail}
-                  onChange={setAccessibilityEmail}
-                />
+                <TextField id='survey-accessibility-email' label='Survey accessibility Email Address' type='search' variant='outlined' value={accessibilityEmail} onChange={setAccessibilityEmail} />
               </FormControl>
             </Grid>
             <Grid item>
@@ -205,10 +239,18 @@ const AddSurvey = (props: any) => {
             </Grid>
           </Grid>
           <Grid container>
-            <Grid item></Grid>
+            <Grid item>
+              {accessibility.map((person, idx) => {
+                return (
+                  <Typography key={idx} variant='h6'>
+                    {person}
+                  </Typography>
+                );
+              })}
+            </Grid>
           </Grid>
           <div>
-            <Button type='button' variant='contained' color='primary'>
+            <Button type='button' variant='contained' color='primary' onClick={handleSubmit}>
               Submit
             </Button>
           </div>
