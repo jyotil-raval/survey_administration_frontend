@@ -56,9 +56,9 @@ const Header: FC = (props: any) => {
   };
 
   const logout = () => {
+    localStorage.clear();
     login_false();
     let isLogin = localStorage.getItem('isLogin');
-    console.log('logout -> isLogin', isLogin);
     if (isLogin === 'false') {
       history.push('/login');
       window.location.reload();

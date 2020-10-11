@@ -43,7 +43,6 @@ const Login: FC = (props: any) => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log('Login:FC -> handleChange -> event', event);
     setPassword(event.target.value);
   };
 
