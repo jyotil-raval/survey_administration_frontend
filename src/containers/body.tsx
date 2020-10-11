@@ -5,7 +5,9 @@ import GetSurveys from '../containers/get_surveys';
 import AddSurvey from '../containers/add_survey';
 
 const Body: FC = (props: any) => {
-  let isLogin: string | null = localStorage.getItem('isLogin');
+  let isLogin: string | null | boolean = localStorage.getItem('isLogin');
+  console.log('Body:FC -> isLogin', isLogin);
+  isLogin = isLogin === 'true' ? true : false;
   return (
     <Fragment>
       <HashRouter>

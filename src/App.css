@@ -15,6 +15,21 @@
   align-items: flex-end;
 }
 
+.margin-top-5p {
+  margin-top: 5%;
+}
+
+.trigger-detail {
+  display: inherit;
+  border: 1px solid rgb(188 188 188);
+  width: 100%;
+  margin-bottom: 2%;
+  margin-top: 2%;
+  padding-left: 2%;
+  margin-left: 2%;
+  border-radius: 2px;
+}
+
 .App-body {
   background-color: whitesmoke;
   min-height: 85vh;

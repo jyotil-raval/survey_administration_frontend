@@ -1,5 +1,5 @@
 import { AppBar, Button, IconButton, makeStyles, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { login_false } from '../helper/methods';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -54,6 +54,13 @@ const Header: FC = (props: any) => {
       </div>
     );
   };
+
+  // useEffect(() => {
+  //   let isLogin = localStorage.getItem('isLogin');
+  //   if (isLogin === 'false') {
+  //     history.push('/login');
+  //   }
+  // });
 
   const logout = () => {
     login_false();

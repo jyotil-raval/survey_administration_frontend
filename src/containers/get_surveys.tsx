@@ -30,7 +30,11 @@ interface SurveyDetail {
 }
 
 const GetSurveys = (props: any) => {
-  let surveys = JSON.parse(localStorage.getItem('surveys') || '');
+  let surveys: Array<SurveyDetail> = [];
+  if (localStorage.getItem('surveys')) {
+    surveys = JSON.parse(localStorage.getItem('surveys') || '');
+  }
+
   const classes = useStyles();
 
   const [expanded, setExpanded] = useState<number | false>(false);

@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState, ChangeEvent } from 'react';
 import Header from '../components/header_auth';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import useInput from '../components/useTextField';
-import { Button } from '@material-ui/core';
+import { Button, Checkbox, FormControl, FormControlLabel, Grid, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,22 +36,14 @@ const AddSurvey = (props: any) => {
   const [expireDate, setExpireDate] = useInput('');
   const [url, setURL] = useInput('');
   const [fromEmail, setFromEmail] = useInput('');
-  const [invalidForm, setInvalidForm] = useState({
-    name: false,
-    expireDate: false,
-    url: false,
-    fromEmail: false
-  });
+  const [triggerCaseCloser, setTriggerCaseCloser] = useState(false);
+  const [triggerActivityCloser, setTriggerActivityCloser] = useState(false);
 
   const validateForm: (surveyDetail: object) => boolean = surveyDetail => {
     return true;
   };
 
   const handleSubmit: () => void = () => {
-    let formValidation = invalidForm;
-    formValidation.name = true;
-    setInvalidForm(formValidation);
-
     const form_id = parseInt(`${Math.random()}`.split('.')[1]);
 
     let surveyDetail: SurveyDetail = {
@@ -73,43 +65,117 @@ const AddSurvey = (props: any) => {
     }
   };
 
+  const handleCaseClosure = (event: ChangeEvent<HTMLInputElement>) => {
+    setTriggerCaseCloser(event.target.checked);
+  };
+
+  const handleActivityClosure = (event: ChangeEvent<HTMLInputElement>) => {
+    setTriggerActivityCloser(event.target.checked);
+  };
+
+  const [formDirty, setFromDirty] = useState<boolean>(false);
+  const [nameFieldDirty, setNameFieldDirty] = useState<boolean>(false);
+
   return (
     <Fragment>
       <Header></Header>
       <div className='App-body'>
         <form className={classes.root} noValidate autoComplete='off' onSubmit={handleSubmit}>
+          <Grid container>
+            <Grid item>
+              <FormControl
+                onClick={() => {
+                  setNameFieldDirty(true);
+                }}>
+                <TextField
+                  fullWidth
+                  required
+                  id='survey-name'
+                  error={name === '' && nameFieldDirty}
+                  helperText={name === '' ? 'Empty field!' : ' '}
+                  label='Survey Name'
+                  type='search'
+                  variant='outlined'
+                  value={name}
+                  onChange={setName}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <FormControl>
+                <TextField
+                  id='survey-expire-date'
+                  fullWidth
+                  required
+                  label='Survey Expire Date'
+                  variant='outlined'
+                  type='date'
+                  error={expireDate === '' && formDirty}
+                  helperText={expireDate === '' ? 'Please enter proper date' : ' '}
+                  value={expireDate}
+                  onChange={setExpireDate}
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item>
+              <FormControl>
+                <TextField
+                  fullWidth
+                  required
+                  error={url === '' && formDirty}
+                  helperText={url === '' ? 'Please enter proper URL' : ' '}
+                  id='survey-url'
+                  label='Survey URL'
+                  type='search'
+                  variant='outlined'
+                  value={url}
+                  onChange={setURL}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <FormControl>
+                <TextField
+                  fullWidth
+                  required
+                  error={fromEmail === '' && formDirty}
+                  helperText={fromEmail === '' ? 'Please enter proper Email Address' : ' '}
+                  id='survey-email'
+                  label='Survey From Email Address'
+                  type='search'
+                  variant='outlined'
+                  value={fromEmail}
+                  onChange={setFromEmail}
+                />
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <div className='trigger-detail'>
+              <Grid item>
+                <FormControl>
+                  <div className='margin-top-5p'>
+                    <Typography>Survey Trigger:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Typography>
+                  </div>
+                </FormControl>
+              </Grid>
+              <Grid item>
+                <FormControlLabel control={<Checkbox checked={triggerCaseCloser} onChange={event => handleCaseClosure(event)} name='triggerCaseCloser' color='primary' />} label='Case Closure' />
+                <FormControlLabel
+                  control={<Checkbox checked={triggerActivityCloser} onChange={event => handleActivityClosure(event)} name='triggerActivityCloser' color='primary' />}
+                  label='Activity Closure'
+                />
+              </Grid>
+            </div>
+          </Grid>
           <div>
-            <TextField fullWidth required id='survey-name' error={invalidForm.name} label='Survey Name' type='search' variant='outlined' value={name} onChange={setName} />
-            <TextField
-              id='survey-expire-date'
-              error={invalidForm.expireDate}
-              fullWidth
-              required
-              label='Survey Expire Date'
-              variant='outlined'
-              type='date'
-              value={expireDate}
-              onChange={setExpireDate}
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-            <TextField fullWidth required error={invalidForm.url} id='survey-url' label='Survey URL' type='search' variant='outlined' value={url} onChange={setURL} />
-            <TextField
-              fullWidth
-              required
-              error={invalidForm.fromEmail}
-              id='survey-email'
-              label='Survey From Email Address'
-              type='search'
-              variant='outlined'
-              value={fromEmail}
-              onChange={setFromEmail}
-            />
-          </div>
-          <div>
-            <Button type='submit' variant='contained' color='primary'>
+            <Button type='button' variant='contained' color='primary'>
               Submit
             </Button>
           </div>

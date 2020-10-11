@@ -1,5 +1,5 @@
 import { AppBar, Button, makeStyles, Toolbar, Typography } from '@material-ui/core';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { login_true } from '../helper/methods';
 
@@ -18,6 +18,13 @@ const useStyles = makeStyles(theme => ({
 const Header: FC = (props: any) => {
   const classes = useStyles();
   let history = useHistory();
+
+  // useEffect(() => {
+  //   let isLogin = localStorage.getItem('isLogin');
+  //   if (isLogin === 'true') {
+  //     history.push('/get-survey');
+  //   }
+  // });
 
   const login = () => {
     login_true();
